@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Transport Management System</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            background-color: #f7f9fc;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .bus-seats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .seat {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .seat.selected {
+            background-color: #28a745;
+        }
+
+        #book-seat, #notify-next-bus, #login-form button, #query-form button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .link {
+            color: #007bff;
+            cursor: pointer;
+            display: block;
+            margin-top: 10px;
+            text-decoration: underline;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>University Transport Management System</h1>
+
+        <!-- Login Section -->
+        <section id="login-section" class="active">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="button" onclick="login()">Login</button>
+                <p id="login-status"></p>
+            </form>
+        </section>
+
+        <!-- Booking Section -->
+        <section id="booking-section">
+            <h2>4 PM Bus Seat Booking</h2>
+            <div class="bus-seats">
+                <!-- 20 seats as buttons for booking -->
+                <button class="seat" data-seat="1">1</button>
+                <button class="seat" data-seat="2">2</button>
+                <button class="seat" data-seat="3">3</button>
+                <button class="seat" data-seat="4">4</button>
+                <button class="seat" data-seat="5">5</button>
+                <button class="seat" data-seat="6">6</button>
+                <button class="seat" data-seat="7">7</button>
+                <button class="seat" data-seat="8">8</button>
+                <button class="seat" data-seat="9">9</button>
+                <button class="seat" data-seat="10">10</button>
+                <button class="seat" data-seat="11">11</button>
+                <button class="seat" data-seat="12">12</button>
+                <button class="seat" data-seat="13">13</button>
+                <button class="seat" data-seat="14">14</button>
+                <button class="seat" data-seat="15">15</button>
+                <button class="seat" data-seat="16">16</button>
+                <button class="seat" data-seat="17">17</button>
+                <button class="seat" data-seat="18">18</button>
+                <button class="seat" data-seat="19">19</button>
+                <button class="seat" data-seat="20">20</button>
+            </div>
+            <button id="book-seat">Book Selected Seat</button>
+            <p id="booking-status"></p>
+
+            <h2>Missed the 4 PM Bus?</h2>
+            <button id="notify-next-bus">Notify Next Bus</button>
+            <p id="notification-status"></p>
+
+            <span class="link" onclick="showSection('query-section')">Have a Query?</span>
+        </section>
+
+        <!-- Query Section -->
+        <section id="query-section">
+            <h2>Submit a Query</h2>
+            <form id="query-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="query">Your Query:</label>
+                <textarea id="query" name="query" required></textarea>
+
+                <button type="submit">Submit Query</button>
+                <p id="query-status"></p>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // JavaScript for handling sections and login functionality
+
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username === "student" && password === "password") { // Dummy credentials
+                showSection('booking-section');
+            } else {
+                document.getElementById('login-status').textContent = "Invalid credentials. Please try again.";
+            }
+        }
+
+        // Seat booking system
+        const seats = document.querySelectorAll('.seat');
+        let selectedSeat = null;
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', () => {
+                seats.forEach(s => s.classList.remove('selected')); // Clear other selections
+                seat.classList.add('selected'); // Select clicked seat
+                selectedSeat = seat.getAttribute('data-seat');
+            });
+        });
+
+        document.getElementById('book-seat')?.addEventListener('click', () => {
+            if (selectedSeat) {
+                document.getElementById('booking-status').textContent = `Seat ${selectedSeat} booked successfully!`;
+                selectedSeat = null; // Clear selected seat
+                seats.forEach(s => s.classList.remove('selected')); // Clear seat selection
+            } else {
+                document.getElementById('booking-status').textContent = 'Please select a seat to book!';
+            }
+        });
+
+        // Notification for missed bus
+        document.getElementById('notify-next-bus')?.addEventListener('click', () => {
+            document.getElementById('notification-status').textContent = 'Notification sent to next bus driver. They will pick you up!';
+        });
+
+        // Query submission
+        document.getElementById('query-form')?.addEventListener('submit', event => {
+            event.preventDefault(); // Prevent page refresh
+            const name = document.getElementById('name').value;
+            const query = document.getElementById('query').value;
+
+            document.getElementById('query-status').textContent = `Thank you, ${name}. Your query has been submitted!`;
+
+            // Clear the form
+            document.getElementById('name').value = '';
+            document.getElementById('query').value = '';
+        });
+    </script>
+</body>
+</html>
